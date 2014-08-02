@@ -1,0 +1,102 @@
+<html>
+    <head>
+        <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/dashboard.css" rel="stylesheet">
+		<link href="/pnotify.custom.min.css" rel="stylesheet">
+	<meta charset='UTF-8'/>
+	<title>Loading...</title>
+    </head>
+    <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">localcast 3</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown" id="media_control_dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Media Control</a>
+				<ul class="dropdown-menu" role="menu">
+                  <li class="text-center">
+					<div class="btn-group controls">
+  						<button type="button" class="btn btn-default"><span id="play_pause_span" class="glyphicon glyphicon-play"></span></button>
+						<button type="button" class="btn btn-default" id="volume_off_btn"><span class="glyphicon glyphicon-volume-off"></span></button>
+  						<button type="button" class="btn btn-default" id="volume_down_btn"><span class="glyphicon glyphicon-volume-down"></span></button>
+  						<button type="button" class="btn btn-default" id="volume_up_btn" ><span class="glyphicon glyphicon-volume-up"></span></button>
+					</div>
+				  </li>
+          
+                  <li><a>Volume level: <span id="volume_level_span">100%</span></a></li>
+                  <li class="divider"></li>
+                  <li class="dropdown-header">ChromeCast Connection Status</li>
+                  <li><a href="#">Chrome Sender: <span id="chrome_sender_status">Offline</span></a></li>
+                  <li><a href="#">Media Session: <span id="media_session_status">Idle</span></a></li>
+                </ul>
+
+			</li>
+			
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active" id="nav_all_media_li"><a id="nav_all_media" href="#">All media</a></li>
+            <li id="nav_music_li"><a href="#" id="nav_music">Music</a></li>
+            <li id="nav_videos_li"><a href="#" id="nav_videos">Videos</a></li>
+            <li id="nav_images_li"><a href="#" id="nav_images">Images</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header" id="page-header">localcast - All media</h1>
+
+
+
+          <h2 class="sub-header" id="section-header">Section title</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Title</th>
+                  <th>Options</th>
+                  <th>Length</th>
+                </tr>
+              </thead>
+              <tbody id="main_table">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
+	<script type="text/javascript" src="/pnotify.custom.min.js"></script>
+	<script type="text/javascript" src="/localcast.ui.js"></script>
+    <script type="text/javascript" src="/localcast.core.js"></script>
+    
+    
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+    </body>
+</html>
