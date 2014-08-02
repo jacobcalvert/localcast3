@@ -31,7 +31,7 @@ app that I could simply drop onto the filesystem and run that would allow stream
  /api/media/{media_resource_id}                 - gets the media element specified by {media_resource_id}
  </pre>
  
- ### Current Features
+### Current Features
  * Server implements a REST interface
  * Bootstrap powered front end
  * Play, pause, volume up, volume down, volume mute
