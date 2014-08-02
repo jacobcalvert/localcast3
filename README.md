@@ -57,6 +57,6 @@ I will probably add more feature as time allows, but these are the basic feature
 2. Get the latest commit here
 3. In src/Enums.py change the <pre>MEDIA_BASE</pre> variable to whatever your media folder is
 4. Run src/Server.py
-5. Open your browser to <pre>http://[<your_ip>]:8080/index.html</pre>
+5. Open your browser to <pre>http://[your_ip]:8080/index.html</pre>
 6. Start a ChromeCast session in Chrome, and choose your media
 7. Done! Enjoy!
