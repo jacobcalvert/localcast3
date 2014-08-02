@@ -16,3 +16,19 @@ app that I could simply drop onto the filesystem and run that would allow stream
  ![localcast3 Main Page](/screenshots/localcast3-main-screen.png?raw=true "localcast3 Main Page")
  
  
+ ###Design and Implementation
+ The core of the web app is built in JavaScript and jQuery. There are two distinct parts to the GUI, the localcast.core.js
+ file and localcast.ui.js file. The localcast.ui.js file contains all the objects, methods, and callbacks that control the
+ DOM objects and interaction with the user. The localcast.core.js file contains all the objects, methods, and callbacks
+ for interacting with the ChromeCast's API and the Python server. 
+ 
+ The Python portion of the app is very simple. It scans the media folder recursively and generates file objects which are
+ stored in memory. The data can be accessed through a REST like interface. For example:
+ 
+ <pre>
+ /api/media/                                    - gets all media items
+ /api/media/?media_type=[audio|video|image]     - gets all of the specified type
+ /api/media/{media_resource_id}                 - gets the media element specified by {media_resource_id}
+ </pre>
+ 
+ 
