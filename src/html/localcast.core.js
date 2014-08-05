@@ -55,6 +55,7 @@ localcast.utils =
 		{
 			hr = parseInt(sec/3600);
 			min = parseInt((sec - (hr*3600))/60);
+			s = parseInt(sec - ((hr*3600) + (min*60)));
 			if(hr < 10)
 			{
 				hr = "0"+hr;
@@ -63,7 +64,11 @@ localcast.utils =
 			{
 				min = "0"+min;
 			}
-			return hr+"h:"+min+"m";
+			if(s < 10)
+			{
+				s = "0"+s;
+			}
+			return hr+"h:"+min+"m:" +s+"s";
 		}
 	},
 	functions:
@@ -98,6 +103,18 @@ localcast.db =
 {
 	media_db:
 	{
+		next_refresh: 0,
+		refresh_threshold:5*60*1000, //milliseconds (5*60*1000 is 5 minutes)
+		needs_refresh:function()
+		{
+			date = new Date();
+			if(date.getTime() >= localcast.db.media_db.next_refresh)
+			{
+				localcast.db.media_db.next_refresh = date.getTime() + localcast.db.media_db.refresh_threshold;
+				return true;
+			}
+			return false;
+		},
 		entry_exists:function(uuid)
 		{
 			if(localcast.db.media_db.storage[uuid])
@@ -171,55 +188,109 @@ localcast.db =
 		},
 		get_all_audio: function()
 		{
-			temp = {};
+			arr = Array();
 			for (var key in localcast.db.media_db.storage)
 			{
 				if(localcast.db.media_db.storage.hasOwnProperty(key))
 				{
 					if(localcast.db.media_db.storage[key].media_type = localcast.globals.media_types.AUDIO)
 					{
-						temp[key] = localcast.db.media_db.storage[key];
+						arr.push(localcast.db.media_db.storage[key]);
 					}
 				}
 			}
-			return temp;
+			sorted = arr.sort(
+								function(a,b)
+								{
+									
+									if(a.url < b.url)
+									{
+										return -1;
+									}
+									else if(a.url > b.url)
+									{
+										return 1;
+									}
+									else
+									{
+										return 0; //equal
+									}
+								}
+							);
+			return sorted;
 		},
 		get_all_video: function()
 		{
-			temp = {};
+			arr = Array();
 			for (var key in localcast.db.media_db.storage)
 			{
 				if(localcast.db.media_db.storage.hasOwnProperty(key))
 				{
 					if(localcast.db.media_db.storage[key].media_type = localcast.globals.media_types.VIDEO)
 					{
-						temp[key] = localcast.db.media_db.storage[key];
+						arr.push(localcast.db.media_db.storage[key]);
 					}
 				}
 			}
-			return temp;
+			sorted = arr.sort(
+								function(a,b)
+								{
+									
+									if(a.url < b.url)
+									{
+										return -1;
+									}
+									else if(a.url > b.url)
+									{
+										return 1;
+									}
+									else
+									{
+										return 0; //equal
+									}
+								}
+							);
+			return sorted;
 		},
 		get_all_images: function()
 		{
-			temp = {};
+			arr = Array();
 			for (var key in localcast.db.media_db.storage)
 			{
 				if(localcast.db.media_db.storage.hasOwnProperty(key))
 				{
 					if(localcast.db.media_db.storage[key].media_type = localcast.globals.media_types.IMAGE)
 					{
-						temp[key] = localcast.db.media_db.storage[key];
+						arr.push(localcast.db.media_db.storage[key]);
 					}
 				}
 			}
-			return temp;
+			sorted = arr.sort(
+								function(a,b)
+								{
+									
+									if(a.url < b.url)
+									{
+										return -1;
+									}
+									else if(a.url > b.url)
+									{
+										return 1;
+									}
+									else
+									{
+										return 0; //equal
+									}
+								}
+							);
+			return sorted;
 		},
 		storage:{},
 		storage_change_callbacks:[],
 		add_storage_onchange_callback:function(callback)
 		{
 			localcast.db.media_db.storage_change_callbacks.push(callback);
-			localcast.globals.logging.log("added storage_change_callback with param '"+callback+"'", "localcast.db.media_db._run_storage_onchange_callbacks()");
+			localcast.globals.logging.log("added storage_change_callback with param '"+callback+"'", "localcast.db.media_db.add_storage_onchange_callbacks()");
 		},
 		_run_storage_onchange_callbacks:function()
 		{
@@ -230,7 +301,39 @@ localcast.db =
 				
 			}
 		}
+	},
+	queue_db:
+	{
+		push:function(media_object)
+		{
+			localcast.db.queue_db.storage.push(media_object);
+			localcast.db.queue_db._run_storage_onchange_callbacks();
+		},
+		pop:function()
+		{
+			item = localcast.db.queue_db.storage[localcast.db.queue_db.storage.length -1];
+			localcast.db.queue_db.storage = localcast.db.queue_db.storage.slice(0, localcast.db.queue_db.storage.length - 2);
+			localcast.db.queue_db._run_storage_onchange_callbacks();
+			return item;
+		},
+		storage:[],
+		storage_change_callbacks:[],
+		add_storage_onchange_callback:function(callback)
+		{
+			localcast.db.media_db.storage_change_callbacks.push(callback);
+			localcast.globals.logging.log("added storage_change_callback with param '"+callback+"'", "localcast.db.queue_db._run_storage_onchange_callbacks()");
+		},
+		_run_storage_onchange_callbacks:function()
+		{
+			localcast.globals.logging.log("running storage_change_callbacks", "localcast.db.queue_db._run_storage_onchange_callbacks()");
+			for(i = 0; i < localcast.db.queue_db.storage_change_callbacks.length; i++)
+			{
+				localcast.db.queue_db.storage_change_callbacks[i]();
+				
+			}
+		}
 	}
+	
 }
 localcast.core = 
 {
@@ -264,13 +367,21 @@ localcast.core =
 	{
 		handler:function()
 		{
-			localcast.core.ajax.request(localcast.utils.urls.make_media_root_request_url(), localcast.core.load_all_media.ajax_callback);
+			if (localcast.db.media_db.needs_refresh())
+			{
+				localcast.core.ajax.request(localcast.utils.urls.make_media_root_request_url(), localcast.core.load_all_media.ajax_callback);
+			}
+			else
+			{
+				localcast.core.load_all_media.load_from_cache();
+			}
+			
 		},
 		ajax_callback:function(data)
 		{
-			localcast.ui.notifications.success("Success!", "All media request was successful!");
+			localcast.globals.logging.log("requesting load all media via ajax","localcast.core.load_all_media.ajax_callback(data)");
 			obj = JSON.parse(data);
-			localcast.db.media_db.empty(); //TODO: for now, later some caching.
+			localcast.db.media_db.empty();
 			for (var key in obj) 
 			{
 			  	if (obj.hasOwnProperty(key)) 
@@ -287,45 +398,106 @@ localcast.core =
 			}
 			localcast.ui.handlers.setup_rebindable_handlers();
 			
+		},
+		silent_ajax_callback:function()
+		{
+			obj = JSON.parse(data);
+			localcast.db.media_db.empty();
+			for (var key in obj) 
+			{
+			  	if (obj.hasOwnProperty(key)) 
+				{
+					//uuid, icon_src, title, duration, url, media_type
+					//console.log(obj.key);
+					localcast.db.media_db.add_entry(key,obj[key].icon_src, obj[key].title, obj[key].duration, obj[key].url, obj[key].media_type, obj[key].content_type);
+			  	}
+			}
+		},
+		load_from_cache:function()
+		{
+			localcast.globals.logging.log("requesting load all media via cache","localcast.core.load_all_media.load_from_cache()");
+			sorted = localcast.db.media_db.get_sorted_array();
+			localcast.ui.media_table.clear();
+			for(i = 0; i < sorted.length; i++)
+			{
+				localcast.ui.media_table.add_row(sorted[i].uuid,sorted[i].icon_src,sorted[i].title, localcast.utils.time.sec_to_hr_min(sorted[i].duration));
+			}
+			localcast.ui.handlers.setup_rebindable_handlers();
 		}
 	},
 	load_all_music:
 	{
 		handler:function()
 		{
-			localcast.core.ajax.request(localcast.utils.urls.make_media_root_request_url() + "?media_type=music", localcast.core.load_all_music.ajax_callback);
+			if (localcast.db.media_db.needs_refresh())
+			{
+				localcast.core.ajax.request(localcast.utils.urls.make_media_root_request_url(), localcast.core.load_all_media.silent_ajax_callback);
+			}
+			else
+			{
+				localcast.core.load_all_music.load_from_cache();
+			}
 		},
-		ajax_callback:function(data)
+		load_from_cache:function()
 		{
-			localcast.db.media_db.empty();
-			obj = JSON.parse(data);
-			
+			localcast.globals.logging.log("requesting load all music via cache","localcast.core.load_all_music.load_from_cache()");
+			sorted = localcast.db.media_db.get_all_audio();
+			localcast.ui.media_table.clear();
+			for(i = 0; i < sorted.length; i++)
+			{
+				localcast.ui.media_table.add_row(sorted[i].uuid,sorted[i].icon_src,sorted[i].title, localcast.utils.time.sec_to_hr_min(sorted[i].duration));
+			}
+			localcast.ui.handlers.setup_rebindable_handlers();
 		}
 	},
 	load_all_images:
 	{
 		handler:function()
 		{
-			localcast.core.ajax.request(localcast.utils.urls.make_media_root_request_url() + "?media_type=image", localcast.core.load_all_images.ajax_callback);
+			if (localcast.db.media_db.needs_refresh())
+			{
+				localcast.core.ajax.request(localcast.utils.urls.make_media_root_request_url(), localcast.core.load_all_media.silent_ajax_callback);
+			}
+			else
+			{
+				localcast.core.load_all_images.load_from_cache();
+			}
 		},
-		ajax_callback:function(data)
+		load_from_cache:function()
 		{
-			localcast.db.media_db.empty();
-			obj = JSON.parse(data);
-			console.log(obj);
+			localcast.globals.logging.log("requesting load all images via cache","localcast.core.load_all_images.load_from_cache()");
+			sorted = localcast.db.media_db.get_all_images();
+			localcast.ui.media_table.clear();
+			for(i = 0; i < sorted.length; i++)
+			{
+				localcast.ui.media_table.add_row(sorted[i].uuid,sorted[i].icon_src,sorted[i].title, localcast.utils.time.sec_to_hr_min(sorted[i].duration));
+			}
+			localcast.ui.handlers.setup_rebindable_handlers();
 		}
 	},
 	load_all_videos:
 	{
 		handler:function()
 		{
-			localcast.core.ajax.request(localcast.utils.urls.make_media_root_request_url() + "?media_type=video", localcast.core.load_all_videos.ajax_callback);
+			if (localcast.db.media_db.needs_refresh())
+			{
+				localcast.core.ajax.request(localcast.utils.urls.make_media_root_request_url(), localcast.core.load_all_media.silent_ajax_callback);
+			}
+			else
+			{
+				localcast.core.load_all_videos.load_from_cache();
+			}
 		},
-		ajax_callback:function(data)
-		{	
-			localcast.db.media_db.empty();
-			obj = JSON.parse(data);
-			console.log(obj);
+		load_from_cache:function()
+		{
+			localcast.globals.logging.log("requesting load all videos via cache","localcast.core.load_all_videos.load_from_cache()");
+			sorted = localcast.db.media_db.get_all_video();
+			localcast.ui.media_table.clear();
+			for(i = 0; i < sorted.length; i++)
+			{
+				localcast.ui.media_table.add_row(sorted[i].uuid,sorted[i].icon_src,sorted[i].title, localcast.utils.time.sec_to_hr_min(sorted[i].duration));
+			}
+			localcast.ui.handlers.setup_rebindable_handlers();
 		}
 	},
 	play_pause:function(play)
@@ -567,6 +739,7 @@ localcast.core =
 			set_volume:function()
 			{
 				localcast.core.cast.session.setReceiverVolumeLevel((localcast.core.cast.media.volume), localcast.core.cast.handlers.media_command_success, localcast.core.cast.handlers.media_failure);
+				localcast.ui.sync(localcast.core.cast.media.session, localcast.core.cast);
 			}
 		},
 		init:function()

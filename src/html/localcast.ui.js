@@ -34,6 +34,14 @@ localcast.ui =
 			$("#media_session_status").html(status);
 		}
 	},
+	timers:
+	{
+		media_timer:null,
+		media_timer_handler:function()
+		{
+			
+		}
+	},
 	media_table:
 	{
 			add_row:function(uuid, icon_src, title, len)
@@ -104,6 +112,11 @@ localcast.ui =
 			btn.addClass("alert-danger");
 		}
 		localcast.ui.volume.set_level(parseInt(cast_core.media.volume*100));
+		span = $("#media_position_span");
+		dur = media_session.media.duration;
+		cur = media_session.currentTime;
+		line = localcast.utils.time.sec_to_hr_min(parseInt(cur)) + " / " + localcast.utils.time.sec_to_hr_min(parseInt(dur));
+		span.html(line);
 				
 
 	},

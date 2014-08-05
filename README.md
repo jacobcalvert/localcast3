@@ -36,18 +36,18 @@ app that I could simply drop onto the filesystem and run that would allow stream
  * Bootstrap powered front end
  * Play, pause, volume up, volume down, volume mute
  * Streaming audio support
+ * Streaming video support 
+ * Image support
  * Media session status info
  * ChromeCast session status info
  * Status notification popups
+ * Client side media caching
 
 ### Future Planned Features
-* Streaming video support (pretty much done, just needs to be tested more)
-* Images support (also pretty much done)
 * Media seek
 * Media queueing
 * Media duration displayed in the table
 * Media search
-* Client side media caching
 
 I will probably add more feature as time allows, but these are the basic features for which I'm shooting.
  
