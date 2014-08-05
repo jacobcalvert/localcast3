@@ -16,7 +16,7 @@ app that I could simply drop onto the filesystem and run that would allow stream
  ![localcast3 Main Page](/screenshots/localcast3-main-screen.png?raw=true "localcast3 Main Page")
  
  
- ### Design and Implementation
+### Design and Implementation
  The core of the web app is built in JavaScript and jQuery. There are two distinct parts to the GUI, the localcast.core.js
  file and localcast.ui.js file. The localcast.ui.js file contains all the objects, methods, and callbacks that control the
  DOM objects and interaction with the user. The localcast.core.js file contains all the objects, methods, and callbacks
