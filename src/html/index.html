@@ -35,7 +35,7 @@
 					</div>
 				  </li>
           
-		  <li><a>Media position: <span id="media_position_span">00h:00m:00s / 00h:00m:00s</span></a></li>
+		  <li><a> <input type="text" class="span2 slider" value="" data-slider-min=0" data-slider-max="100" data-slider-step="1" data-slider-value="0" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="hide"> </a></li>
                   <li><a>Volume level: <span id="volume_level_span">100%</span></a></li>
                   <li class="divider"></li>
                   <li class="dropdown-header">ChromeCast Connection Status</li>
@@ -94,6 +94,22 @@
         </div>
       </div>
     </div>
+<div class="modal fade" id="preview_modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Media Preview</h4>
+      </div>
+      <div class="modal-body" id="preview_modal_body">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -106,6 +122,7 @@
     
     
     <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/bootstrap/js/bootstrap-slider.js"></script>
 
     </body>
 </html>

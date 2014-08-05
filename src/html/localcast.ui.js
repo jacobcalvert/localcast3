@@ -47,7 +47,7 @@ localcast.ui =
 			add_row:function(uuid, icon_src, title, len)
 			{
 				tbl = $("#main_table");
-				format = "<tr id ='"+uuid+"'><td><img src=\""+icon_src+"\" height='25' width='25'/></td><td>"+title+"</td><td>";
+				format = "<tr id ='"+uuid+"'><td><img src=\""+icon_src+"\" height='25' width='25'/></td><td><a href='#' class='preview'>"+title+"</a></td><td>";
 				format += "<div class='btn-group'><button type='button' class='btn btn-default queue_media_btn'><span class='glyphicon glyphicon-plus'></span>  Queue</button>";
 				format += "<button type='button' class='btn btn-default play_media_btn'><span class='glyphicon glyphicon-play'></span>  Play Now</button></div>";
 				format += "</td><td>"+len+"</td></tr>";
@@ -157,6 +157,8 @@ localcast.ui =
 			$("#volume_off_btn").click(this.volume_mute_onclick.handler);
 			$("#volume_up_btn").click(this.volume_up_onclick.handler);
 			$("#volume_down_btn").click(this.volume_down_onclick.handler);
+			$('.slider').slider();
+			$('#preview_modal').modal('hide');
 			localcast.globals.logging.log("setup_handlers is processing", "localcast.ui.handlers.setup_handlers()");
 			/* start bootstrap modifications */
 			$('#media_control_dropdown').on({
@@ -165,6 +167,9 @@ localcast.ui =
 				"hide.bs.dropdown":  function() { return this.closable; }
 			});
 			$(".controls").click(function(e){e.stopPropagation();});
+			$('#preview_modal').on('hidden.bs.modal', function () {
+   				$("#preview_modal_body").empty();
+			})
 			/* end bootstrap modifications */
 			this.setup_rebindable_handlers();
 		},
@@ -172,6 +177,7 @@ localcast.ui =
 		{
 			$(".play_media_btn").click(this.play_media_onclick.handler);
 			$(".queue_media_btn").click(this.queue_media_onclick.handler);
+			$(".preview").click(this.preview_media_onclick.handler);
 			localcast.globals.logging.log("setup_rebindable_handlers is processing", "localcast.ui.handlers.setup_rebindable_handlers()");
 		},
 		volume_mute_onclick:
@@ -257,6 +263,26 @@ localcast.ui =
 			{
 				localcast.ui.handlers.play_media_onclick.callbacks.push(callback);
 				localcast.globals.logging.log("play_media_onclick.add_callback request with param '"+localcast.utils.functions.get_name(callback)+"'", "localcast.ui.handlers.play_media_onclick.add_callback()");
+			},
+			callbacks:[]
+		},
+		preview_media_onclick:
+		{
+			handler:function()
+			{
+				parent_id = $(this).parent().parent().attr("id"); 
+				localcast.globals.logging.log("preview_media_onclick.handler executed with param '"+parent_id+"'", "localcast.ui.handlers.preview_media_onclick.handler()");
+				for(i = 0; i < localcast.ui.handlers.preview_media_onclick.callbacks.length; i++)
+				{
+					
+					localcast.ui.handlers.preview_media_onclick.callbacks[i](parent_id);
+					
+				}
+			},
+			add_callback:function(callback)
+			{
+				localcast.ui.handlers.preview_media_onclick.callbacks.push(callback);
+				localcast.globals.logging.log("preview_media_onclick.add_callback request with param '"+localcast.utils.functions.get_name(callback)+"'", "localcast.ui.handlers.preview_media_onclick.add_callback()");
 			},
 			callbacks:[]
 		},
@@ -395,6 +421,24 @@ localcast.ui =
 
 			},
 			callbacks:[]
+		},
+		create_audio_preview:function(url, content_type)
+		{
+			elem = "<audio controls><source src=\""+url+"\" type='"+content_type+"'>Your browser does not support the audio element</audio>";
+			$("#preview_modal_body").html(elem);
+			$("#preview_modal").modal('show');
+		},
+		create_video_preview:function(url, content_type)
+		{
+			elem = "<video controls width='100%'><source src=\""+url+"\" type='"+content_type+"'>Your browser does not support the video element</video>";
+			$("#preview_modal_body").html(elem);
+			$("#preview_modal").modal('show');
+		},
+		create_image_preview:function(url)
+		{
+			elem = "<img width='100%' src=\""+ url + "\"/>";
+			$("#preview_modal_body").html(elem);
+			$("#preview_modal").modal('show');
 		}
 	},
 	

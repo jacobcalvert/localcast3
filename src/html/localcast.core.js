@@ -42,9 +42,9 @@ localcast.globals =
 	},
 	media_types:
 	{
-		AUDIO:0,
-		VIDEO:1,
-		IMAGE:2
+		AUDIO:"audio",
+		VIDEO:"video",
+		IMAGE:"image"
 	}
 }
 localcast.utils = 
@@ -354,6 +354,7 @@ localcast.core =
 		localcast.ui.handlers.volume_up_onclick.add_callback(localcast.core.volume_up);
 		localcast.ui.handlers.volume_down_onclick.add_callback(localcast.core.volume_down);
 		localcast.ui.handlers.volume_mute_onclick.add_callback(localcast.core.volume_mute);
+		localcast.ui.handlers.preview_media_onclick.add_callback(localcast.core.media_preview);
 		localcast.core.cast.init();
 
 		
@@ -530,6 +531,22 @@ localcast.core =
 	},
 	queue_next:function()
 	{
+	},
+	media_preview:function(media_id)
+	{
+		media_object = localcast.db.media_db.get(media_id);
+		if(media_object.media_type == localcast.globals.media_types.AUDIO)
+		{
+			localcast.ui.handlers.create_audio_preview(media_object.url, media_object.content_type);
+		}
+		else if(media_object.media_type == localcast.globals.media_types.VIDEO)
+		{
+			localcast.ui.handlers.create_video_preview(media_object.url, media_object.content_type);
+		}
+		//else if(media_object.media_type == localcast.globals.media_types.IMAGE)
+		//{
+		//	localcast.ui.handlers.create_image_preview(media_object.url);
+		//}
 	},
 	static_strings:
 	{

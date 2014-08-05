@@ -11,10 +11,12 @@ app that I could simply drop onto the filesystem and run that would allow stream
  I found one person who had built a very simple version on an nginx server and it inspired me to build this. The 
  _localcast_ app only requires Tornado framework and it does the rest. You can point it to the folder containing your 
  media and it will recursively scan the folder picking out music, videos, and images. You can then open the web interface
- at your IP address and manage the ChromeCast session and media from there. 
+ at your IP address and manage the ChromeCast session and media from there. You can also preview your media before you send
+ it to the ChromeCast. 
  
  ![localcast3 Main Page](/screenshots/localcast3-main-screen.png?raw=true "localcast3 Main Page")
- 
+ ![localcast3 Audio Preview](/screenshots/localcast3-audio-preview-screen.png?raw=true "localcast3 Audio Preview")
+ ![localcast3 Video Preview](/screenshots/localcast3-video-preview-screen.png?raw=true "localcast3 Video Preview")
  
 ### Design and Implementation
  The core of the web app is built in JavaScript and jQuery. There are two distinct parts to the GUI, the localcast.core.js
@@ -42,6 +44,7 @@ app that I could simply drop onto the filesystem and run that would allow stream
  * ChromeCast session status info
  * Status notification popups
  * Client side media caching
+ * Audio and video preview before sending it to the ChromeCast
 
 ### Future Planned Features
 * Media seek
