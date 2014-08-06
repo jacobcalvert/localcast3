@@ -1,8 +1,10 @@
 <html>
     <head>
         <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	
         <link href="/dashboard.css" rel="stylesheet">
-		<link href="/pnotify.custom.min.css" rel="stylesheet">
+	<link href="/bootstrap/css/slider.css" rel="stylesheet">
+	<link href="/pnotify.custom.min.css" rel="stylesheet">
 	<meta charset='UTF-8'/>
 	<title>Loading...</title>
     </head>
@@ -21,29 +23,30 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown" id="media_control_dropdown">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Media Control</a>
-				<ul class="dropdown-menu" role="menu"  >
-                 		<li class="text-center">
+		<li class="dropdown" id="media_control_dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Media Control</a>
+			<ul class="dropdown-menu" role="menu"  >
+				<li class="text-center">
 					<div class="btn-group controls">
 						<button type="button" class="btn btn-default" id="volume_off_btn"><span class="glyphicon glyphicon-volume-off"></span></button>
-  						<button type="button" class="btn btn-default" id="volume_down_btn"><span class="glyphicon glyphicon-volume-down"></span></button>
-  						<button type="button" class="btn btn-default" id="volume_up_btn" ><span class="glyphicon glyphicon-volume-up"></span></button>
-						<button type="button" class="btn btn-default"><span id="seek_back_span" class="glyphicon glyphicon-backward"></span></button>
+						<button type="button" class="btn btn-default" id="volume_down_btn"><span class="glyphicon glyphicon-volume-down"></span></button>
+						<button type="button" class="btn btn-default" id="volume_up_btn" ><span class="glyphicon glyphicon-volume-up"></span></button>
 						<button type="button" class="btn btn-default"><span id="play_pause_span" class="glyphicon glyphicon-play"></span></button>
-						<button type="button" class="btn btn-default"><span id="seek_fwd_span" class="glyphicon glyphicon-forward"></span></button>
-					</div>
-				  </li>
-          
-		  <li><a> <input type="text" class="span2 slider" value="" data-slider-min=0" data-slider-max="100" data-slider-step="1" data-slider-value="0" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="hide"> </a></li>
-                  <li><a>Volume level: <span id="volume_level_span">100%</span></a></li>
-                  <li class="divider"></li>
-                  <li class="dropdown-header">ChromeCast Connection Status</li>
-                  <li><a href="#">Chrome Sender: <span id="chrome_sender_status">Offline</span></a></li>
-                  <li><a href="#">Media Session: <span id="media_session_status">Idle</span></a></li>
-                </ul>
 
-			</li>
+					</div>
+				</li>
+				<li class="dropdown-header">Media Position</li>
+				<li id="media_seek_li">
+					
+				</li>
+				<li><a>Volume level: <span id="volume_level_span">100%</span></a></li>
+				<li class="divider"></li>
+				<li class="dropdown-header">ChromeCast Connection Status</li>
+				<li><a href="#">Chrome Sender: <span id="chrome_sender_status">Offline</span></a></li>
+				<li><a href="#">Media Session: <span id="media_session_status">Idle</span></a></li>
+                	</ul>
+
+		</li>
 			
             <li class="dropdown" id="media_control_dropdown" >
 		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Queue</a>
@@ -69,6 +72,9 @@
             <li id="nav_music_li"><a href="#" id="nav_music">Music</a></li>
             <li id="nav_videos_li"><a href="#" id="nav_videos">Videos</a></li>
             <li id="nav_images_li"><a href="#" id="nav_images">Images</a></li>
+	    <li>
+		
+	   </li>
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -115,14 +121,16 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
 	<script type="text/javascript" src="/pnotify.custom.min.js"></script>
+	<script src="/bootstrap/js/bootstrap-slider.js"></script>
 	<script type="text/javascript" src="/localcast.ui.js"></script>
     <script type="text/javascript" src="/localcast.core.js"></script>
     
     
-    <script src="/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/bootstrap/js/bootstrap-slider.js"></script>
+    
+    
 
     </body>
 </html>

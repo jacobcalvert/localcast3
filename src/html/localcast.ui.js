@@ -37,9 +37,9 @@ localcast.ui =
 	timers:
 	{
 		media_timer:null,
-		media_timer_handler:function()
+		media_timer_handler:function( current_pos)
 		{
-			
+			$("#seek_slider").slider('setValue', current_pos);
 		}
 	},
 	media_table:
@@ -112,11 +112,28 @@ localcast.ui =
 			btn.addClass("alert-danger");
 		}
 		localcast.ui.volume.set_level(parseInt(cast_core.media.volume*100));
-		span = $("#media_position_span");
-		dur = media_session.media.duration;
-		cur = media_session.currentTime;
-		line = localcast.utils.time.sec_to_hr_min(parseInt(cur)) + " / " + localcast.utils.time.sec_to_hr_min(parseInt(dur));
-		span.html(line);
+		
+
+		if(!localcast.ui.timers.media_timer)
+		{
+			localcast.ui.handlers.update_seek_slider_values(media_session.media.duration, localcast.core.cast.media.position);
+			localcast.ui.timers.media_timer = setInterval(
+									function()
+									{
+										if((localcast.core.cast.media.session.playerState === "PLAYING"))
+										{
+										
+											$("#seek_slider").slider('setValue',localcast.core.cast.media.position++);
+										}
+										else if(localcast.core.cast.media.session.playerState === "IDLE")
+										{
+											localcast.ui.handlers.update_seek_slider_values(0, 0);
+											clearInterval(localcast.ui.timers.media_timer);
+											localcast.ui.timers.media_timer = null;
+										}
+									},
+									1000);
+		}
 				
 
 	},
@@ -157,7 +174,6 @@ localcast.ui =
 			$("#volume_off_btn").click(this.volume_mute_onclick.handler);
 			$("#volume_up_btn").click(this.volume_up_onclick.handler);
 			$("#volume_down_btn").click(this.volume_down_onclick.handler);
-			$('.slider').slider();
 			$('#preview_modal').modal('hide');
 			localcast.globals.logging.log("setup_handlers is processing", "localcast.ui.handlers.setup_handlers()");
 			/* start bootstrap modifications */
@@ -172,6 +188,7 @@ localcast.ui =
 			})
 			/* end bootstrap modifications */
 			this.setup_rebindable_handlers();
+			this.update_seek_slider_values(5000, 0);		
 		},
 		setup_rebindable_handlers:function()
 		{
@@ -179,6 +196,31 @@ localcast.ui =
 			$(".queue_media_btn").click(this.queue_media_onclick.handler);
 			$(".preview").click(this.preview_media_onclick.handler);
 			localcast.globals.logging.log("setup_rebindable_handlers is processing", "localcast.ui.handlers.setup_rebindable_handlers()");
+		},
+		update_seek_slider_values:function(maxi, current)
+		{
+			$("#media_seek_li").empty();
+			$("#media_seek_li").html('<a class="well"><input class="span2" value="'+current+'" type="text" id="seek_slider" data-slider-min="0" data-slider-max="'+maxi+'" width="100%"></a>');
+			$('#seek_slider').slider({formater:localcast.utils.time.sec_to_hr_min});
+			$(".slider").css("width","100%");
+			$('#seek_slider').on('slide', function(ev){localcast.ui.handlers.seek_onslide.handler(ev);});		
+		},
+		seek_onslide:
+		{
+			handler:function(event)
+			{
+				localcast.globals.logging.log("seek_onslide.handler executed with param event.value ='"+event.value+"'", "localcast.ui.handlers.seek_onslide.handler(event)");
+				for(i = 0; i < localcast.ui.handlers.seek_onslide.callbacks.length; i++)
+				{
+					localcast.ui.handlers.seek_onslide.callbacks[i](event.value);
+				}
+			},
+			add_callback:function(callback)
+			{
+				localcast.ui.handlers.seek_onslide.callbacks.push(callback);
+				localcast.globals.logging.log("seek_onslide.add_callback request with param '"+localcast.utils.functions.get_name(callback)+"'", "localcast.ui.handlers.seek_onslide.add_callback()");
+			},
+			callbacks:[]
 		},
 		volume_mute_onclick:
 		{

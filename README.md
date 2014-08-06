@@ -17,6 +17,7 @@ app that I could simply drop onto the filesystem and run that would allow stream
  ![localcast3 Main Page](/screenshots/localcast3-main-screen.png?raw=true "localcast3 Main Page")
  ![localcast3 Audio Preview](/screenshots/localcast3-audio-preview-screen.png?raw=true "localcast3 Audio Preview")
  ![localcast3 Video Preview](/screenshots/localcast3-video-preview-screen.png?raw=true "localcast3 Video Preview")
+ ![localcast3 Seekbar](/screenshots/localcast3-video-seekbar.png?raw=true "localcast3 Seekbar")
  
 ### Design and Implementation
  The core of the web app is built in JavaScript and jQuery. There are two distinct parts to the GUI, the localcast.core.js
@@ -45,9 +46,9 @@ app that I could simply drop onto the filesystem and run that would allow stream
  * Status notification popups
  * Client side media caching
  * Audio and video preview before sending it to the ChromeCast
+ * Media seek
 
 ### Future Planned Features
-* Media seek
 * Media queueing
 * Media duration displayed in the table
 * Media search

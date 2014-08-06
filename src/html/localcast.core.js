@@ -355,6 +355,7 @@ localcast.core =
 		localcast.ui.handlers.volume_down_onclick.add_callback(localcast.core.volume_down);
 		localcast.ui.handlers.volume_mute_onclick.add_callback(localcast.core.volume_mute);
 		localcast.ui.handlers.preview_media_onclick.add_callback(localcast.core.media_preview);
+		localcast.ui.handlers.seek_onslide.add_callback(localcast.core.media_seek);
 		localcast.core.cast.init();
 
 		
@@ -531,6 +532,10 @@ localcast.core =
 	},
 	queue_next:function()
 	{
+	},
+	media_seek:function(seek_to)
+	{
+		localcast.core.cast.handlers.seek(seek_to);
 	},
 	media_preview:function(media_id)
 	{
@@ -757,6 +762,12 @@ localcast.core =
 			{
 				localcast.core.cast.session.setReceiverVolumeLevel((localcast.core.cast.media.volume), localcast.core.cast.handlers.media_command_success, localcast.core.cast.handlers.media_failure);
 				localcast.ui.sync(localcast.core.cast.media.session, localcast.core.cast);
+			},
+			seek:function(pos)
+			{
+				request = new chrome.cast.media.SeekRequest();
+				request.currentTime = pos;
+				localcast.core.cast.media.session.seek(request, localcast.core.cast.handlers.media_command_success, localcast.core.cast.handlers.media_failure);
 			}
 		},
 		init:function()
