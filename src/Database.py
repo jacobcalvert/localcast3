@@ -63,9 +63,9 @@ class FileHelper(object):
         if tipe[0]:
             if "image" in tipe[0]:
                 return "image"
-            if "video" in tipe[0]:
+            elif "video" in tipe[0]:
                 return "video"
-            if "audio" in tipe[0]:
+            elif "audio" in tipe[0]:
                 return "audio"
     @staticmethod
     def get_ctype(f):

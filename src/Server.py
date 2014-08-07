@@ -39,11 +39,10 @@ class APIHandler(tornado.web.RequestHandler):
         else:
             #get all
             if len(qstring) > 0:
-                if qstring["media_type"][0] == "music":
+                if qstring["media_type"][0] == "audio":
 
                     return Database.DB.get_music()
 
-                pass
             else:
                 # not filtering
 

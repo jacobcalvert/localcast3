@@ -193,7 +193,7 @@ localcast.db =
 			{
 				if(localcast.db.media_db.storage.hasOwnProperty(key))
 				{
-					if(localcast.db.media_db.storage[key].media_type = localcast.globals.media_types.AUDIO)
+					if(localcast.db.media_db.storage[key].media_type == localcast.globals.media_types.AUDIO)
 					{
 						arr.push(localcast.db.media_db.storage[key]);
 					}
@@ -226,7 +226,7 @@ localcast.db =
 			{
 				if(localcast.db.media_db.storage.hasOwnProperty(key))
 				{
-					if(localcast.db.media_db.storage[key].media_type = localcast.globals.media_types.VIDEO)
+					if(localcast.db.media_db.storage[key].media_type == localcast.globals.media_types.VIDEO)
 					{
 						arr.push(localcast.db.media_db.storage[key]);
 					}
@@ -259,7 +259,7 @@ localcast.db =
 			{
 				if(localcast.db.media_db.storage.hasOwnProperty(key))
 				{
-					if(localcast.db.media_db.storage[key].media_type = localcast.globals.media_types.IMAGE)
+					if(localcast.db.media_db.storage[key].media_type == localcast.globals.media_types.IMAGE)
 					{
 						arr.push(localcast.db.media_db.storage[key]);
 					}
