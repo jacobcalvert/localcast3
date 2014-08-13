@@ -64,3 +64,6 @@ I will probably add more feature as time allows, but these are the basic feature
 5. Open your browser to <pre>http://[your_ip]:8080/index.html</pre>
 6. Start a ChromeCast session in Chrome, and choose your media
 7. Done! Enjoy!
+
+
+README.md Revision: 1.11.1
