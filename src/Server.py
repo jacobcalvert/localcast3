@@ -23,9 +23,6 @@ class APIHandler(tornado.web.RequestHandler):
     def parse_uri_to_action(url, qstring):
         qstring = qs_decode(qstring)
         url_parts = url[0].split("/")
-        print url_parts
-        print qstring
-        print len(url_parts)
         if len(url_parts) > 2:
             # get id
             if len(qstring):
@@ -39,9 +36,15 @@ class APIHandler(tornado.web.RequestHandler):
         else:
             #get all
             if len(qstring) > 0:
-                if qstring["media_type"][0] == "audio":
-
-                    return Database.DB.get_music()
+                if "media_type" in qstring:
+                    if qstring["media_type"][0] == "audio":
+                        return Database.DB.get_music()
+                    elif qstring["media_type"][0] == "video":
+                        return Database.DB.get_video()
+                    elif qstring["media_type"][0] == "image":
+                        return Database.DB.get_images()
+                elif "query" in qstring:
+                    return Database.DB.search(qstring["query"][0])
 
             else:
                 # not filtering

@@ -175,6 +175,7 @@ localcast.ui =
 			$("#volume_up_btn").click(this.volume_up_onclick.handler);
 			$("#volume_down_btn").click(this.volume_down_onclick.handler);
 			$('#preview_modal').modal('hide');
+			$("#search_box").keydown(this.search_onkeydown.handler);
 			localcast.globals.logging.log("setup_handlers is processing", "localcast.ui.handlers.setup_handlers()");
 			/* start bootstrap modifications */
 			$('#media_control_dropdown').on({
@@ -222,6 +223,28 @@ localcast.ui =
 			},
 			callbacks:[]
 		},
+		search_onkeydown:
+		{
+			handler:function(event)
+			{
+				if(event.keyCode == 13) //enter was pressed
+				{
+					localcast.globals.logging.log("search_onkeydown.handler executed with param value ='"+$("#search_box").val()+"'", "localcast.ui.handlers.search_onkeydown.handler(event)");
+					for(i = 0; i < localcast.ui.handlers.search_onkeydown.callbacks.length; i++)
+					{
+
+						localcast.ui.handlers.search_onkeydown.callbacks[i]($("#search_box").val());
+					}
+					
+				}
+			},
+			add_callback:function(callback)
+			{
+				localcast.ui.handlers.search_onkeydown.callbacks.push(callback);
+				localcast.globals.logging.log("search_onkeydown.add_callback request with param '"+localcast.utils.functions.get_name(callback)+"'", "localcast.ui.handlers.search_onkeydown.add_callback()");
+			},
+			callbacks:[]
+		},	
 		volume_mute_onclick:
 		{
 			handler:function()

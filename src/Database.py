@@ -15,18 +15,37 @@ class MediaObject(object):
         self.duration = duration
         self.content_type = c_type
 
+    def is_like(self, q):
+        q = q.lower()
+        return q in self.title.lower() or q in self.url.lower() or q in self.media_type.lower()
+
+
 class DB(object):
     MUSIC = {}
     IMAGES = {}
     VIDEOS = {}
     ALL_FILES = []
-
+    SEARCH_CACHE = {}
     @staticmethod
     def get_music():
         music = {}
         for k, v in DB.MUSIC.iteritems():
             music[k] = v.__dict__
         return music
+
+    @staticmethod
+    def get_video():
+        video = {}
+        for k, v in DB.VIDEOS.iteritems():
+            video[k] = v.__dict__
+        return video
+
+    @staticmethod
+    def get_images():
+        images = {}
+        for k, v in DB.IMAGES.iteritems():
+            images[k] = v.__dict__
+        return images
 
     @staticmethod
     def get_all():
@@ -39,6 +58,25 @@ class DB(object):
             all[k] = v.__dict__
 
         return all
+
+    @staticmethod
+    def search(q):
+        if q in DB.SEARCH_CACHE.keys():
+            return DB.SEARCH_CACHE[q]
+        else:
+            DB.SEARCH_CACHE[q] = {}
+            for k, v in DB.MUSIC.iteritems():
+                if v.is_like(q):
+                    DB.SEARCH_CACHE[q][v.uuid] = v.__dict__
+            for k, v in DB.VIDEOS.iteritems():
+                if v.is_like(q):
+                    DB.SEARCH_CACHE[q][v.uuid] = v.__dict__
+            for k, v in DB.IMAGES.iteritems():
+                if v.is_like(q):
+                    DB.SEARCH_CACHE[q][v.uuid] = v.__dict__
+            return DB.SEARCH_CACHE[q]
+
+
 class FileHelper(object):
     ALL_PATHS = []
 

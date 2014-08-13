@@ -3,7 +3,7 @@ import socket
 
 class Paths(object):
     HTML_BASE = "html/"
-    MEDIA_BASE = "/media/jacob/1C000DDA000DBBB0/Documents and Settings/Jacob/Downloads/"
+    MEDIA_BASE = "/home/jacob/Downloads/"
 
     DEFAULT_DIR_THUMB = "/img/default_dir_thumb.png"
 
