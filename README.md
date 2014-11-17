@@ -66,4 +66,7 @@ I will probably add more feature as time allows, but these are the basic feature
 7. Done! Enjoy!
 
 
-README.md Revision: 1.11.1
+### Bugs and such
+* Apparently, tornado's default static file handler <a href = "https://github.com/tornadoweb/tornado/issues/1046">reads the ENTIRE file into memory before sending it over</a>, so I will need to write a custom static file handler. Too much lag on 1080P video. [Fixed 11/16/2014]
+
+README.md Revision: 1.12.0

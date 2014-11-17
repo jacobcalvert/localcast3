@@ -6,14 +6,19 @@
 # server is set up here and all the handlers are initialized.
 ###############################################################
 
+
 import tornado
+import tornado.gen
+import tornado.httputil
 import tornado.ioloop
 import tornado.websocket
 import tornado.web
 import json
+import os
 from urlparse import parse_qs as qs_decode
 import Enums
 import Database
+
 
 
 class APIRoot(tornado.web.RequestHandler):
@@ -82,6 +87,63 @@ class APIHandler(tornado.web.RequestHandler):
                 return Database.DB.get_all()
 
 
+class MyStaticFileHandler(tornado.web.StaticFileHandler):
+    @tornado.web.asynchronous
+    @tornado.gen.coroutine
+    def get(self, path, include_body=True):
+        #Assume that path is correct, validation will be handeled elsewhere
+        absolute_path = self.get_absolute_path(self.root, path)
+        self.absolute_path = self.validate_absolute_path(self.root, absolute_path)
+        if self.absolute_path is None:
+            return
+        self.path = self.absolute_path
+
+        self.modified = self.get_modified_time()
+        self.set_headers()
+
+        if self.should_return_304():
+            self.set_status(304)
+            return
+
+        request_range = None
+        range_header = self.request.headers.get("Range")
+        if range_header:
+            # As per RFC 2616 14.16, if an invalid Range header is specified,
+            # the request will be treated as if the header didn't exist.
+            request_range = tornado.httputil._parse_request_range(range_header)
+
+        if request_range:
+            start, end = request_range
+            size = self.get_content_size()
+            if (start is not None and start >= size) or end == 0:
+                # As per RFC 2616 14.35.1, a range is not satisfiable only: if
+                # the first requested byte is equal to or greater than the
+                # content, or when a suffix with length 0 is specified
+                self.set_status(416)  # Range Not Satisfiable
+                self.set_header("Content-Type", "text/plain")
+                self.set_header("Content-Range", "bytes */%s" % (size, ))
+                return
+            if start is not None and start < 0:
+                start += size
+            if end is not None and end > size:
+                # Clients sometimes blindly use a large range to limit their
+                # download size; cap the endpoint at the actual file size.
+                end = size
+
+            self.set_status(206)  # Partial Content
+            self.set_header("Content-Range",
+                            tornado.httputil._get_content_range(start, end, size))
+        else:
+            start = end = None
+
+        content = self.get_content(self.absolute_path, start, end)
+
+        for chunk in content:
+            self.write(chunk)
+            yield tornado.gen.Task(self.flush)
+        self.finish()
+
+
 def main():
     """
     Entry point for the application. Sets up the webserver and handlers.
@@ -90,7 +152,7 @@ def main():
     app = tornado.web.Application([
         (r"/api/?", APIRoot),
         (r"/api/(.+)/?", APIHandler),
-        (r"/media/(.*)", tornado.web.StaticFileHandler, {'path': Enums.Paths.MEDIA_BASE}),
+        (r"/media/(.*)", MyStaticFileHandler, {'path': Enums.Paths.MEDIA_BASE}),
         (r"/(.*)", tornado.web.StaticFileHandler, {'path': Enums.Paths.HTML_BASE}),
     ]
     )
